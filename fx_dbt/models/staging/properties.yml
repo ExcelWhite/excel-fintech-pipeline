@@ -1,0 +1,25 @@
+version: 2
+
+models:
+  - name: stg_fx_rates
+    description: "Silver: cleaned, deduped FX rates — one row per day per quote currency."
+    columns:
+      - name: fx_key
+        description: "Natural key: rate_date + quote_currency."
+        tests:
+          - not_null
+          - unique
+      - name: rate_date
+        tests:
+          - not_null
+      - name: base_currency
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['USD']
+      - name: quote_currency
+        tests:
+          - not_null
+      - name: rate
+        tests:
+          - not_null

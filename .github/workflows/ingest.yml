@@ -29,3 +29,7 @@ jobs:
 
       - name: Run ingestion
         run: python ingest_fx.py
+
+      - name: Run dbt build
+        working-directory: fx_dbt
+        run: dbt build --profiles-dir .

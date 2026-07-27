@@ -1,0 +1,19 @@
+version: 2
+
+models:
+  - name: fct_fx_rates
+    description: "Gold: business-ready FX fact — daily rate and inverse rate per pair."
+    columns:
+      - name: fx_key
+        tests:
+          - not_null
+          - unique
+          - relationships:
+              to: ref('stg_fx_rates')
+              field: fx_key
+      - name: rate
+        tests:
+          - not_null
+      - name: inverse_rate
+        tests:
+          - not_null

@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: raw
+    description: "Bronze: raw landing tables written by the ingestion scripts."
+    schema: raw
+    tables:
+      - name: fx_rates_raw
+        description: "One row per pull from the Frankfurter FX API"

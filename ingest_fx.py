@@ -9,24 +9,31 @@ KEY_PATH = "sa-key.json"   # your downloaded key (must be gitignored)
 DATASET = "raw"
 TABLE = "fx_rates_raw"
 BASE_CURRENCY = "USD"
-FRANKFURTER_URL = f"https://api.frankfurter.app/latest?base={BASE_CURRENCY}"
+API_URL = "https://open.er-api.com/v6/latest/USD"
 
 # --- 1. Authenticate ------------------------------------------------------
 credentials = service_account.Credentials.from_service_account_file(KEY_PATH)
 client = bigquery.Client(credentials=credentials, project=credentials.project_id)
 
 # --- 2. Call the API ------------------------------------------------------
-response = requests.get(FRANKFURTER_URL, timeout=30)
-response.raise_for_status()          # fail loudly if the API returned an error
+response = requests.get(API_URL, timeout=30)
+response.raise_for_status()
 payload = response.json()
 
+# this API signals success in the body, not just the HTTP status
+if payload.get("result") != "success":
+    raise RuntimeError(f"API did not return success: {payload}")
+
 # --- 3. Shape ONE row -----------------------------------------------------
-# We land the rates as raw JSON text. dbt will parse it later. This is the
-# standard "raw layer" pattern: store faithfully now, transform downstream.
+# this API gives the data's vintage as a unix timestamp, not a date string
+rate_date = datetime.datetime.fromtimestamp(
+    payload["time_last_update_unix"], tz=datetime.timezone.utc
+).date().isoformat()
+
 row = {
     "ingested_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-    "rate_date": payload["date"],          # the date the rates are ACTUALLY for
-    "base_currency": payload["base"],
+    "rate_date": rate_date,
+    "base_currency": payload["base_code"],
     "rates_json": json.dumps(payload["rates"]),
 }
 

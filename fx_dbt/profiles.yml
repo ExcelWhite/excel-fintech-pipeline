@@ -1,0 +1,12 @@
+fx_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: service-account
+      keyfile: ../sa-key.json
+      project: excel-fintech-pipeline
+      dataset: dbt_fx
+      location: US
+      threads: 4
+      timeout_seconds: 300
