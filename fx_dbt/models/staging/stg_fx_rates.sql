@@ -24,7 +24,7 @@ exploded as (
         base_currency,
         pair.quote_currency,
         cast(pair.rate_str as float64) as rate
-    from latest
+    from latest,
     unnest([
         struct('NGN' as quote_currency, json_value(rates_json, '$.NGN') as rate_str),
         struct('EUR', json_value(rates_json, '$.EUR')),
@@ -33,8 +33,8 @@ exploded as (
         struct('CAD', json_value(rates_json, '$.CAD')),
         struct('AUD', json_value(rates_json, '$.AUD')),
         struct('CHF', json_value(rates_json, '$.CHF'))
-    ])
-) as pair
+    ]) as pair
+) 
 
 select
     concat(cast(rate_date as string), '_', quote_currency) as fx_key,
