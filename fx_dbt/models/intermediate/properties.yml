@@ -1,0 +1,19 @@
+version: 2
+
+models:
+  - name: int_loan_balances
+    description: "Loan-level repaid and outstanding totals."
+    columns:
+      - name: loan_id
+        tests: [not_null, unique]
+      - name: outstanding_balance
+        tests: [not_null]
+
+  - name: int_loan_status_daily
+    description: "One row per loan per day with the status in effect."
+    columns:
+      - name: loan_day_key
+        tests: [not_null, unique]
+      - name: status
+        tests:
+          - accepted_values: { values: ['active', 'overdue', 'repaid', 'written_off'] }

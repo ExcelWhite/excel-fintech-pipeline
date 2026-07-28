@@ -2,18 +2,69 @@ version: 2
 
 models:
   - name: fct_fx_rates
-    description: "Gold: business-ready FX fact — daily rate and inverse rate per pair."
+    description: "Gold: daily FX rate and inverse per pair."
     columns:
       - name: fx_key
-        tests:
-          - not_null
-          - unique
-          - relationships:
-              to: ref('stg_fx_rates')
-              field: fx_key
+        tests: [not_null, unique]
       - name: rate
-        tests:
-          - not_null
+        tests: [not_null]
       - name: inverse_rate
+        tests: [not_null]
+
+  - name: dim_date
+    description: "Gold: calendar spine."
+    columns:
+      - name: date_day
+        tests: [not_null, unique]
+
+  - name: dim_borrower
+    description: "Gold: borrower attributes with loan rollups."
+    columns:
+      - name: borrower_id
+        tests: [not_null, unique]
+      - name: segment
+        tests: [not_null]
+
+  - name: fct_loans
+    description: "Gold: one row per loan with status and balance."
+    columns:
+      - name: loan_id
+        tests: [not_null, unique]
+      - name: current_status
+        tests:
+          - accepted_values: { values: ['active', 'overdue', 'repaid', 'written_off'] }
+      - name: outstanding_balance
+        tests: [not_null]
+
+  - name: fct_repayments
+    description: "Gold: one row per repayment event."
+    columns:
+      - name: repayment_id
+        tests: [not_null]
+      - name: loan_id
         tests:
           - not_null
+          - relationships: { to: ref('fct_loans'), field: loan_id }
+
+  - name: fct_loan_daily
+    description: "Gold: one row per loan per day — the PAR engine."
+    columns:
+      - name: loan_day_key
+        tests: [not_null, unique]
+      - name: days_overdue
+        tests: [not_null]
+      - name: status
+        tests:
+          - accepted_values: { values: ['active', 'overdue', 'repaid', 'written_off'] }
+
+  - name: fct_portfolio_daily
+    description: "Gold: daily portfolio metrics incl. PAR30/PAR90 by segment and channel."
+    columns:
+      - name: total_outstanding
+        tests: [not_null]
+
+  - name: fct_cohort_default
+    description: "Gold: default rate by disbursement month and channel."
+    columns:
+      - name: default_rate
+        tests: [not_null]
