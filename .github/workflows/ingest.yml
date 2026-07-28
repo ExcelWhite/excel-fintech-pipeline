@@ -28,7 +28,7 @@ jobs:
         run: echo "$GCP_SA_KEY" > sa-key.json
 
       - name: Run ingestion
-        run: python ingest_fx.py
+        run: python scripts/ingest_fx.py
 
       - name: Run dbt build
         working-directory: fx_dbt

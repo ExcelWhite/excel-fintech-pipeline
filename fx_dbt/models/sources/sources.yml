@@ -7,3 +7,13 @@ sources:
     tables:
       - name: fx_rates_raw
         description: "One row per pull from the Frankfurter FX API"
+      - name: borrowers
+        description: "Synthetic merchant master."
+      - name: loans
+        description: "Synthetic loan disbursements."
+      - name: repayment_schedule
+        description: "Expected installments per loan."
+      - name: repayments
+        description: "Actual repayments received."
+      - name: loan_status_changes
+        description: "Loan status transition log."

@@ -1,3 +1,8 @@
 .venv/
 *.json
 __pycache__/
+sa-key.json
+.DS_Store
+logs/
+target/
+dbt_packages/

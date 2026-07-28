@@ -1,3 +1,4 @@
+import os
 import json
 import datetime
 import requests
@@ -5,7 +6,7 @@ from google.cloud import bigquery
 from google.oauth2 import service_account
 
 # --- Config ---------------------------------------------------------------
-KEY_PATH = "sa-key.json"   # your downloaded key (must be gitignored)
+KEY_PATH = os.path.join(os.path.dirname(__file__), "..", "sa-key.json")
 DATASET = "raw"
 TABLE = "fx_rates_raw"
 BASE_CURRENCY = "USD"
