@@ -32,4 +32,4 @@ jobs:
 
       - name: Run dbt build
         working-directory: fx_dbt
-        run: dbt build --profiles-dir .
+        run: dbt build --exclude tag:requires_billing --profiles-dir .
